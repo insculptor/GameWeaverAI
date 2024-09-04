@@ -1,0 +1,12 @@
+## Directory
+/.venv
+/data
+/.vscode
+/__pycache__
+/.pytest_cache
+/models
+
+
+## Files
+*.pyc
+.env
