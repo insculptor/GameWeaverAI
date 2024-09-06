@@ -3,8 +3,8 @@
 /data
 /.vscode
 /__pycache__
-/.pytest_cache
 /models
+/vectorstore
 
 
 ## Files
