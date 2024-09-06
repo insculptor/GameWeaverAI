@@ -1,7 +1,3 @@
-Certainly! Here's a sample `README.md` for your **GameWeaverAI** project:
-
----
-
 # GameWeaverAI
 
 GameWeaverAI is an intelligent game generation system that allows users to generate and play simple games such as Tic-Tac-Toe. The application uses Retrieval-Augmented Generation (RAG) and a custom RAG pipeline to dynamically create games from game rule documents stored in a vector database. The system enables users to upload PDF files containing game rules and then generate code for the game based on those rules. Players can choose between single-player (AI opponent) and multiplayer modes.
@@ -132,7 +128,3 @@ CHROMADB_COLLECTION=game_rules
 - **[Streamlit](https://streamlit.io/)**: For the web interface to interact with the RAG pipeline.
 - **[ChromaDB](https://www.trychroma.com/)**: For vector storage and retrieval.
 - **LangChain**: For text chunking and recursive character splitting.
-
----
-
-Feel free to modify this `README.md` based on further updates or features added to the project. Let me know if you need any additional sections or details!
