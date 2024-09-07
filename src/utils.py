@@ -6,7 +6,7 @@
 #####                   Common Util Function for Application                   #####
 ####################################################################################
 """
-
+import os
 import subprocess
 from time import perf_counter
 
@@ -51,3 +51,30 @@ def get_total_gpu_memory():
     gpu_memory_gb = round(gpu_memory_bytes) /(2**30)
     print(f"[INFO]: Total available GPU memory: {gpu_memory_gb} (GB)")
     return gpu_memory_gb
+
+
+
+def get_root_dir():
+    """
+    Get the absolute path of the root directory, which contains the 'requirements.txt' file.
+
+    Returns:
+        str: The absolute path to the root directory.
+    """
+    # Start at the current directory
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+
+    # Traverse upwards until we find the root directory containing 'requirements.txt'
+    while True:
+        # Check if 'requirements.txt' exists in the current directory
+        if 'requirements.txt' in os.listdir(current_dir):
+            return current_dir
+
+        # Move one directory level up
+        new_dir = os.path.dirname(current_dir)
+        
+        # If we've reached the root directory of the file system, stop
+        if new_dir == current_dir:
+            raise FileNotFoundError("Could not find 'requirements.txt' in any parent directory.")
+        
+        current_dir = new_dir

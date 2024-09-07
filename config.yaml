@@ -1,0 +1,28 @@
+models:
+  EMBEDDING_MODEL : 'dunzhang/stella_en_1.5B_v5'
+  JARVIS_CODE_LLM : "codellama"
+  JARVIS_RULES_LLM : "llama3.1"
+  OPENAI_LLM_MODEL: "gpt-4o"
+  
+
+hyperparameters:
+  max_length: 256
+  temperature: 0.5
+
+vectorstore:
+  CHROMADB_COLLECTION: "gameweaver_chroma_collection"
+  CHUNK_SIZE : 300
+  CHUNK_OVERLAP : 50
+
+
+logging:
+  DEBUG_LEVEL: 'DEBUG'
+
+game_rules:
+  section_titles:
+    - "Overview"
+    - "Game Setup"
+    - "How to Play"
+    - "Winning the Game"
+    - "Game Strategy"
+    - "End of Game"

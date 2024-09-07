@@ -1,6 +1,6 @@
 """
 ####################################################################################
-#####                     File: src/models/models.py                           #####
+#####                File: src/models/hf_models_manager.py                     #####
 #####                         Author: Ravi Dhir                                #####
 #####                      Created on: 09/05/2024                              #####
 #####         Hugging Face Models Manager to Load Models from HF               #####
@@ -9,14 +9,18 @@
 
 import os
 
+import yaml
 from dotenv import load_dotenv
 from huggingface_hub import login, snapshot_download
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
 
+# Load the config.yaml file
+with open(os.path.join(os.path.dirname(__file__), '..', '..', 'config.yaml'), 'r') as f:
+    config = yaml.safe_load(f)
 load_dotenv()
-
+ 
 class HFModelsManager:
-    def __init__(self, repo_name: str, model_path: str = None):
+    def __init__(self, repo_name: str, model_path: str = None, model_type: str = 'embedding'):
         """
         Initializes the Huggingface Model Manager by connecting to Huggingface and preparing the model.
 
@@ -24,8 +28,10 @@ class HFModelsManager:
             repo_name (str): The Huggingface repository name (e.g., "bert-base-uncased").
             model_path (str, optional): The local base path where the model will be downloaded. 
                                         Defaults to MODEL_BASE_DIR environment variable or './models'.
+            model_type (str, optional): Type of model ('embedding' or 'causal_lm'). Defaults to 'embedding'.
         """
         self.repo_name = repo_name
+        self.model_type = model_type
         self.model_base_dir = model_path or os.getenv('MODEL_BASE_DIR', './models')
         self.token = os.getenv('HUGGINGFACE_TOKEN')
 
@@ -75,7 +81,13 @@ class HFModelsManager:
             Tuple[AutoModel, AutoTokenizer]: The initialized model and tokenizer.
         """
         try:
-            model = AutoModel.from_pretrained(self.model_dir)
+            if self.model_type == 'embedding':
+                model = AutoModel.from_pretrained(self.model_dir)
+            elif self.model_type == 'causal_lm':
+                model = AutoModelForCausalLM.from_pretrained(self.model_dir)
+            else:
+                raise ValueError(f"Invalid model type: {self.model_type}. Use 'embedding' or 'causal_lm'.")
+            
             tokenizer = AutoTokenizer.from_pretrained(self.model_dir)
             print(f"Model and tokenizer for '{self.repo_name}' initialized successfully.")
             return model, tokenizer
@@ -85,10 +97,9 @@ class HFModelsManager:
 
 
 if __name__ == "__main__":
-    repo_name = "sentence-transformers/all-MiniLM-L6-v2"
-    model_path = "./models"  # Optional: Set the model path
+    repo_name = config['models']['EMBEDDING_MODEL']
     # Instantiate the HFModelsManager
-    manager = HFModelsManager(repo_name=repo_name)
+    manager = HFModelsManager(repo_name=repo_name, model_type='embedding')
 
     # Initialize the model and tokenizer
     model, tokenizer = manager.initialize_model()
