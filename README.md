@@ -13,10 +13,11 @@ The architecture of the GameWeaverAI application is outlined in the diagram belo
 2. [Features](#features)
 2. [Project Structure](#project-structure)
 3. [Installation](#installation)
-4. [Usage](#usage)
-5. [Environment Variables](#environment-variables)
-6. [How it Works](#how-it-works)
-7. [Acknowledgements](#acknowledgements)
+4. [Docker Setup](#docker-setup)
+5. [Usage](#usage)
+6. [Environment Variables](#environment-variables)
+7. [How it Works](#how-it-works)
+8. [Acknowledgements](#acknowledgements)
 
 ## Features
 - **Game Rule Ingestion**: Upload PDF documents that contain game rules, and the system will ingest the document into a vector database.
@@ -100,6 +101,45 @@ The architecture of the GameWeaverAI application is outlined in the diagram belo
     streamlit run src/UI/streamlit_app.py
     ```
 
+## Docker Setup
+
+### Build the Docker Image
+
+1. Build the Docker image using the following command:
+
+   ```bash
+   docker build -t meditechravi/gameweaverai .
+   ```
+
+### Run the Docker Container
+
+Once the Docker image is built, you can run the container by passing the necessary environment variables using the `docker run` command:
+
+```bash
+docker run -d -p 8501:8501 \
+  -e ROOT_PATH=/app \
+  -e DOCS_PATH=/app/data/uploads \
+  -e VECTORSTORE_PATH=/app/vectorstore \
+  -e MODELS_BASE_DIR=/app/models \
+  -e HUGGINGFACE_TOKEN=<your_huggingface_token> \
+  -e OPENAI_API_KEY=<your_openai_api_key> \
+  -e JARVIS_API_KEY=<your_jarvislabs_api_key> \
+  --name gameweaverai meditechravi/gameweaverai
+```
+
+### **Explanation**:
+- `-d`: Runs the container in detached mode.
+- `-p 8501:8501`: Exposes port `8501` for the Streamlit application.
+- `-e`: Specifies environment variables needed for the app.
+- `--name gameweaverai`: Assigns a name to the container.
+- `meditechravi/gameweaverai`: The name of the Docker image.
+
+Make sure to replace the placeholder values (`<your_huggingface_token>`, `<your_openai_api_key>`, etc.) with actual values.
+
+### Accessing the Application
+
+Once the container is running, you can access the GameWeaverAI application at `http://localhost:8501`.
+
 ## Usage
 
 ### 1. **Upload Game Rules (Admin Panel) [Optional]**
@@ -136,6 +176,7 @@ VECTORSTORE_PATH=vectorstore
 MODELS_BASE_DIR=models
 
 # API keys
+HUGGINGFACE_TOKEN=your_huggingface_key
 OPENAI_API_KEY=your_openai_key
 JARVIS_API_KEY=your_jarvislabs_key
 

@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 load_dotenv()
-ROOT_PATH = os.environ.get("ROOT_PATH")
+ROOT_PATH = os.getenv("ROOT_PATH","/app")
 sys.path.append(ROOT_PATH)
 print(f"[INFO]: {ROOT_PATH=}")
 config_path = os.path.join(ROOT_PATH, 'config.yaml')

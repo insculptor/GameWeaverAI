@@ -15,7 +15,7 @@ import yaml
 from dotenv import load_dotenv
 
 load_dotenv()
-ROOT_PATH = os.environ.get("ROOT_PATH")
+ROOT_PATH = os.getenv("ROOT_PATH","/app")
 sys.path.append(ROOT_PATH)
 print(f"[INFO]: {ROOT_PATH=}")
 config_path = os.path.join(ROOT_PATH, 'config.yaml')
@@ -39,7 +39,7 @@ class RAGRetriever(RAGPipeline):
     def __init__(self):
         """Initializes RAGRetriever with configuration from config.yaml."""
         super().__init__()
-        config_path = os.path.join(os.getenv("ROOT_PATH"), 'config.yaml')
+        config_path = os.path.join(os.getenv("ROOT_PATH","/app"), 'config.yaml')
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
         self.section_titles = self.config['game_rules']['section_titles']

@@ -14,7 +14,7 @@ import yaml
 from dotenv import load_dotenv
 
 load_dotenv()
-ROOT_PATH = os.environ.get("ROOT_PATH")
+ROOT_PATH = os.getenv("ROOT_PATH","/app")
 print(f"[INFO]: {ROOT_PATH=}")
 config_path = os.path.join(ROOT_PATH, 'config.yaml')
 with open(config_path, 'r') as f:
