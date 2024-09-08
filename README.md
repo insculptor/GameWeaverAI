@@ -20,19 +20,39 @@ GameWeaverAI is an intelligent game generation system that allows users to gener
 ## Project Structure
 ```
 ├── src
+│   ├── controllers
+│   │   ├── executor.py            # Executes the game logic and pipeline
+│   │   ├── prompts.py             # Handles prompt generation for code and game rules
+│   ├── models
+│   │   ├── hf_models_manager.py   # Manages Hugging Face model loading
+│   │   ├── llm_engine.py          # Handles LLM (JarvisLabs/OpenAI) service integration
 │   ├── rag
-│   │   ├── ingest_data.py        # Handles ingestion of PDF documents into ChromaDB
-│   │   ├── retrieve_data.py      # Handles retrieval of metadata from ChromaDB
-│   │   ├── rag_pipeline_base.py  # Base class for the RAG pipeline (embedding, ingestion, retrieval)
+│   │   ├── ingest_data.py         # Handles ingestion of PDF documents into ChromaDB
+│   │   ├── retrieve_data.py       # Handles retrieval of metadata from ChromaDB
+│   │   ├── rag_pipeline_base.py   # Base class for the RAG pipeline (embedding, ingestion, retrieval)
 │   ├── UI
-│   │   ├── streamlit_app.py      # Main Streamlit app file, handles routing
-│   │   ├── streamlit_pages.py    # Streamlit page logic for document upload, metadata viewer, etc.
-│   │   ├── htmltemplates.py      # HTML templates and CSS for UI styling
+│   │   ├── streamlit_app.py       # Main Streamlit app file, handles routing
+│   │   ├── streamlit_pages.py     # Streamlit page logic for document upload, metadata viewer, etc.
+│   │   ├── htmltemplates.py       # HTML templates and CSS for UI styling
 ├── data
-│   ├── uploads                   # Directory for storing uploaded PDF files
-│   └── vectorstore               # ChromaDB vector database storage
+│   ├── docs
+│   │   ├── Bill Gates.pdf         # Example game rules document
+│   │   ├── Tic Tac Toe.pdf        # Example game rules document
+│   │   └── tic_tac_toe.pdf        # Example game rules document
+├── notebooks
+│   ├── rag_pipeline.ipynb         # Jupyter notebook for RAG pipeline testing
+│   ├── testing_prompts.ipynb      # Jupyter notebook for testing prompts
+├── vectorstore
+│   ├── chroma.sqlite3             # ChromaDB vector storage
+│   ├── gameweaver_chroma_collection.json # Collection file for ChromaDB
+├── .streamlit
+│   ├── config.toml                # Streamlit configuration file
 ├── .env                           # Environment variables configuration
+├── .gitignore                     # Git ignore file
+├── config.yaml                    # Configuration file for models and sections
+├── LICENSE                        # License file for the project
 ├── README.md                      # Project documentation (this file)
+├── requirements.txt               # Python dependencies for the project
 ```
 
 ## Installation
