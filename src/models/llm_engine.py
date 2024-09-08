@@ -156,7 +156,8 @@ class LLMService:
 
     def extract_python_code(self, response: str) -> str:
         """
-        Extract Python code from the LLM response by identifying code blocks between '''python and '''.
+        Extract Python code from the LLM response by identifying code blocks between '''python and ''' for OpenAI,
+        and ''' for JarvisLabs. If no Python code is found, retries with OpenAI as a fallback.
 
         Args:
             response (str): The LLM response that may contain Python code.
@@ -165,12 +166,32 @@ class LLMService:
             str: Extracted Python code, or the full response if no code block is found.
         """
         logging.info("Extracting Python code from LLM response...")
+
+        # Try to match the OpenAI style ('''python ... ''')
         code_match = re.search(r"```python(.*?)```", response, re.DOTALL)
+
+        # If OpenAI style code block is not found, try Jarvis style (''' ... ''')
+        if not code_match:
+            logging.info("No OpenAI style Python code block found, trying Jarvis style...")
+            code_match = re.search(r"```(.*?)```", response, re.DOTALL)
+
+        # If code block is found, return the extracted Python code
         if code_match:
             logging.info("Python code extracted successfully.")
             return code_match.group(1).strip()
+
+        # If no code block is found, retry with OpenAI fallback
+        logging.warning("No Python code found in the response. Retrying code generation with OpenAI fallback...")
+        openai_code = self.openai_generate(response)
+        
+        # Try to extract code again from the OpenAI response
+        code_match = re.search(r"```python(.*?)```", openai_code, re.DOTALL)
+        
+        if code_match:
+            logging.info("Python code extracted successfully after retrying with OpenAI.")
+            return code_match.group(1).strip()
         else:
-            logging.warning("No Python code found in the response. Returning full response.")
+            logging.warning("Still no Python code found. Returning full response.")
             return response
 
     def generate_code(self, prompt: str):
@@ -269,10 +290,11 @@ class LLMService:
 
 # Example usage
 if __name__ == "__main__":
+    game_name = "Tic Tac Toe"
     llm_service = LLMService()
     print("*"*100)
     print("[INFO]: Testing LLM Generation for Code and Game Rules")
-    game_rules_prompt = generate_game_rules_prompt("Bill Gates")
+    game_rules_prompt = generate_game_rules_prompt(game_name=game_name)
     print("Game Rules Prompt:\n", game_rules_prompt)
     generated_rules = llm_service.generate_rules(game_rules_prompt)
     print("Generated Game Rules:\n", generated_rules)
