@@ -1,3 +1,21 @@
+game_rules:
+  section_titles:
+    - "Overview"
+    - "Game Objective"
+    - "Game Setup"
+    - "How to Play"
+    - "Winning the Game"
+    - "Game Strategy"
+    - "End of Game"
+  section_descriptions:
+    Overview: "A short description of the game, its purpose, and how it is played. It introduces players to the game concept."
+    Game Objective: "Defines what players need to do to win or achieve the highest score."
+    Game Setup: "Instructions on how to prepare the game before starting, including components, board setup, and player roles."
+    How to Play: "Detailed instructions on the flow of the game, player actions, and turn sequence. This section can scale depending on the complexity of the game."
+    Winning the Game: "Defines the conditions needed to win the game."
+    Game Strategy: "Offers strategic advice on how to improve the chances of winning. and Tips for playing the game."
+    End of Game: "Explains how and when the game concludes."
+
 models:
   EMBEDDING_MODEL : 'dunzhang/stella_en_1.5B_v5'
   JARVIS_CODE_LLM : "codellama"
@@ -16,13 +34,4 @@ vectorstore:
 
 
 logging:
-  DEBUG_LEVEL: 'DEBUG'
-
-game_rules:
-  section_titles:
-    - "Overview"
-    - "Game Setup"
-    - "How to Play"
-    - "Winning the Game"
-    - "Game Strategy"
-    - "End of Game"
+  DEBUG_LEVEL: 'INFO'

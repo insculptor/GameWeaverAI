@@ -11,6 +11,7 @@ import os
 
 import PyPDF2
 import streamlit as st
+import yaml
 from dotenv import load_dotenv
 
 from src.rag.ingest_data import RAGIngestor
@@ -22,18 +23,34 @@ load_dotenv()
 # Path to the documents directory from .env
 DOCS_PATH = os.getenv("DOCS_PATH")
 
+
+# Load config.yaml file
+config_path = os.path.join(os.getenv("ROOT_PATH"), "config.yaml")
+with open(config_path, 'r') as f:
+    config = yaml.safe_load(f)
+
+# Extract section titles and descriptions from config.yaml
+section_titles = config['game_rules']['section_titles']
+section_descriptions = config['game_rules']['section_descriptions']
+
+# Dynamically create the HTML document
 VALID_GAME_DOCUMENT = """
 <h3><strong>Instructions</strong>: The Valid Content of the Game File should have the following Sections:</h3>
 <ol>
-    <li><strong>Overview</strong>: A brief description of the game.</li>
-    <li><strong>Game Setup</strong>: Details on how to set up the game.</li>
-    <li><strong>How to Play</strong>: Instructions on playing the game.</li>
-    <li><strong>Winning the Game</strong>: Conditions required to win the game.</li>
-    <li><strong>Game Strategy</strong>: Tips and strategies for playing the game.</li>
-    <li><strong>End of Game</strong>: How and when the game ends.</li>
+"""
+
+for section in section_titles:
+    description = section_descriptions.get(section, "Description not available.")
+    VALID_GAME_DOCUMENT += f"    <li><strong>{section}</strong>: {description}</li>\n"
+
+VALID_GAME_DOCUMENT += """
 </ol>
 <p><em>Please ensure your document follows this structure for proper ingestion.</em></p>
 """
+
+# Print the dynamically generated VALID_GAME_DOCUMENT
+print(VALID_GAME_DOCUMENT)
+
 
 REQUIRED_SECTIONS = [
     "Overview",
