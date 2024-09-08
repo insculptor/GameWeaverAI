@@ -23,6 +23,12 @@ jobs:
       with:
         python-version: 3.11.9
 
+    - name: Free up disk space
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /opt/ghc
+
     - name: Cache pip dependencies
       uses: actions/cache@v3
       with:
@@ -30,6 +36,11 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install --no-cache-dir -r requirements.txt
 
     - name: Login to Docker Hub
       if: success()
@@ -41,5 +52,5 @@ jobs:
     - name: Build and Push Docker image
       if: success()
       run: |
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/gameweaverai:latest .
+        docker build --no-cache -t ${{ secrets.DOCKER_HUB_USERNAME }}/gameweaverai:latest .
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gameweaverai:latest
