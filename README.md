@@ -1,12 +1,12 @@
 # GameWeaverAI
 
-GameWeaverAI is an intelligent game generation system that allows users to generate and play simple games such as Tic-Tac-Toe. The application uses Retrieval-Augmented Generation (RAG) and a custom RAG pipeline to dynamically create games from game rule documents stored in a vector database. The system enables users to upload PDF files containing game rules and then generate code for the game based on those rules. Players can choose between single-player (AI opponent) and multiplayer modes.
+GameWeaverAI is an intelligent game generation system that allows users to generate and play simple games, such as Tic-Tac-Toe or more complex games based on rules ingested from documents. The application uses Retrieval-Augmented Generation (RAG) and a custom RAG pipeline to dynamically create games from game rule documents stored in a vector database. Users can upload PDF files containing game rules, and the system will generate and validate Python code for the game, which users can play in a terminal window.
 
 ## Features
 - **Game Rule Ingestion**: Upload PDF documents that contain game rules, and the system will ingest the document into a vector database.
-- **Dynamic Game Generation**: Generates Python code for the game based on the ingested rules and allows users to play the game directly.
-- **RAG Pipeline**: Uses Retrieval-Augmented Generation to retrieve and generate game rules on demand.
-- **AI Opponent**: In single-player mode, the system generates an AI opponent to play against the user.
+- **Dynamic Game Generation**: Generates Python code for the game based on the ingested rules and allows users to play the game directly in a terminal window.
+- **Code Validation**: Automatically validates generated Python code for syntax and execution errors, retrying up to 3 times.
+- **RAG Pipeline**: Uses Retrieval-Augmented Generation to retrieve and generate game rules dynamically from ingested documents.
 - **Streamlit UI**: A user-friendly web interface built using Streamlit to interact with the system.
 
 ## Table of Contents
@@ -21,17 +21,18 @@ GameWeaverAI is an intelligent game generation system that allows users to gener
 ```
 ├── src
 │   ├── controllers
-│   │   ├── executor.py            # Executes the game logic and pipeline
+│   │   ├── executor.py            # Executes the game logic and pipeline (MAIN FILE)
+│   │   ├── code_validator.py      # Compiles the LLM generated code and tests for errors, retries on failures.
 │   │   ├── prompts.py             # Handles prompt generation for code and game rules
 │   ├── models
 │   │   ├── hf_models_manager.py   # Manages Hugging Face model loading
-│   │   ├── llm_engine.py          # Handles LLM (JarvisLabs/OpenAI) service integration
+│   │   ├── llm_engine.py          # Handles LLM (JarvisLabs/OpenAI) service integration and code generation retries
 │   ├── rag
 │   │   ├── ingest_data.py         # Handles ingestion of PDF documents into ChromaDB
 │   │   ├── retrieve_data.py       # Handles retrieval of metadata from ChromaDB
 │   │   ├── rag_pipeline_base.py   # Base class for the RAG pipeline (embedding, ingestion, retrieval)
 │   ├── UI
-│   │   ├── streamlit_app.py       # Main Streamlit app file, handles routing
+│   │   ├── streamlit_app.py       # Main Streamlit app file, handles routing and game launch
 │   │   ├── streamlit_pages.py     # Streamlit page logic for document upload, metadata viewer, etc.
 │   │   ├── htmltemplates.py       # HTML templates and CSS for UI styling
 ├── data
@@ -105,8 +106,9 @@ GameWeaverAI is an intelligent game generation system that allows users to gener
    - Navigate to the **Metadata Viewer** page.
    - Enter the Game ID to fetch and display metadata for a specific game.
 
-### 3. **Generate Game (To be implemented)**
-   - In the future, users will be able to select a game and generate a playable game instance dynamically from the ingested rules.
+### 3. **Generate Game**
+   - Enter the name of the game on the home page, and the system will generate the Python code for the game.
+   - A message will indicate that the game has been generated, and it will open in a new terminal window where you can play.
 
 ## Environment Variables
 
@@ -121,25 +123,31 @@ DOCS_PATH=data/uploads
 VECTORSTORE_PATH=vectorstore
 MODELS_BASE_DIR=models
 
-# Model and embeddings
-EMBEDDING_MODEL=WhereIsAI/UAE-Large-V1
+# API keys
+OPENAI_API_KEY=your_openai_key
+JARVIS_API_KEY=your_jarvislabs_key
 
-# ChromaDB Collection
-CHROMADB_COLLECTION=game_rules
+# JarvisLabs and OpenAI endpoints
+JARVIS_OLLAMA_CODE_ENDPOINT=https://your-jarvislabs-endpoint
 ```
 
 ## How it Works
 
 1. **RAG Pipeline**:
-   - The system ingests game rule PDFs using the RAG pipeline and splits the document into sections. 
+   - The system ingests game rule PDFs using the RAG pipeline and splits the document into sections.
    - Each section is chunked, embedded using Hugging Face models, and stored in a vector database (ChromaDB).
 
 2. **Game Generation**:
    - Game rules are retrieved from ChromaDB based on user input (e.g., Tic-Tac-Toe).
-   - In future implementations, the system will generate Python code dynamically from these rules to create a playable game.
+   - The system generates Python code dynamically from these rules to create a playable game.
 
-3. **AI Opponent**:
-   - In single-player mode, an AI agent will be generated to play against the user.
+3. **Code Validation and Retry**:
+   - The generated code is automatically validated for syntax and execution errors.
+   - If the code fails, the system retries up to 3 times with code fixes, leveraging OpenAI for corrections.
+   - Once the code is validated, the game is launched in a terminal window for the user to play.
+
+4. **AI Opponent (Future Implementation)**:
+   - In future updates, an AI agent will be generated to play against the user in single-player mode.
 
 ## Acknowledgements
 

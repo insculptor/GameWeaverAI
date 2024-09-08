@@ -60,5 +60,11 @@ li {
 li strong {
     color: #f63366;  /* Set color for the strong tags inside list items */
 }
+h3, .section-title {
+    color: #f63366;  /* Ensures that section titles are in the same color as 'li strong' */
+    font-weight: bold;
+    margin-top: 20px;  /* Add some space before each section */
+}
 </style>
 '''
+

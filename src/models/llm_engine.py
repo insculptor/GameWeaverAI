@@ -23,8 +23,9 @@ sys.path.append(ROOT_PATH)
 print(f"[INFO]: {ROOT_PATH=}")
 config_path = os.path.join(ROOT_PATH, 'config.yaml')
 with open(config_path, 'r') as f:
-        config =  yaml.safe_load(f)
+        config = yaml.safe_load(f)
 
+from src.controllers.code_validator import CodeValidator
 from src.controllers.prompts import generate_code_prompt, generate_game_rules_prompt
 
 
@@ -74,6 +75,9 @@ class LLMService:
         # Game Rules Configuration
         self.section_titles = self.config['game_rules']['section_titles']
         self.section_descriptions = self.config['game_rules']['section_descriptions']
+
+        # Initialize CodeValidator
+        self.code_validator = CodeValidator()
 
         logging.info("LLMService initialized with models from config.yaml.")
 
@@ -194,6 +198,35 @@ class LLMService:
             logging.warning("Still no Python code found. Returning full response.")
             return response
 
+    def retry_code_generation(self, prompt: str, error_message: str, retries: int = 3):
+        """
+        Retry code generation up to 3 times if errors are encountered during validation.
+        Args:
+            prompt (str): The original prompt used to generate code.
+            error_message (str): The error message encountered during validation.
+            retries (int): Number of retries allowed (default: 3).
+        Returns:
+            str: The working Python code, or an error if all retries fail.
+        """
+        for retry in range(retries):
+            logging.info(f"Retrying code generation, attempt {retry + 1}/{retries}...")
+            correction_prompt = f"The following code failed with this error:\n\n{error_message}\n\nPlease correct it.\n\n{prompt}"
+            new_code = self.openai_generate(correction_prompt)
+
+            # Check if the new code is valid and compilable
+            if self.code_validator.validate_python_code(new_code):
+                logging.info(f"Validation passed for the generated code on retry {retry + 1}.")
+                if self.code_validator.compile_python_code(new_code):
+                    logging.info(f"Code compiled successfully after {retry + 1} retries.")
+                    return new_code
+                else:
+                    logging.warning(f"Code compilation failed on retry {retry + 1}.")
+            else:
+                logging.warning(f"Code validation failed on retry {retry + 1}.")
+
+        logging.error("Failed to generate working code after 3 retries.")
+        return None
+
     def generate_code(self, prompt: str):
         """
         Unified function for generating code. Tries JarvisLabs first, falls back to OpenAI if Jarvis is unavailable.
@@ -206,10 +239,24 @@ class LLMService:
         """
         logging.info("Attempting to generate code with JarvisLabs...")
         if self.is_jarvis_available():
-            return self.generate_code_jarvis(prompt)
+            code = self.generate_code_jarvis(prompt)
         else:
             logging.info("Falling back to OpenAI for code generation.")
-            return self.extract_python_code(self.openai_generate(prompt).strip()) 
+            code = self.extract_python_code(self.openai_generate(prompt).strip())
+
+        # Validate and compile the code
+        if self.code_validator.validate_python_code(code):
+            logging.info("Generated code is valid.")
+            if self.code_validator.compile_python_code(code):
+                logging.info("Code compiled successfully on the first attempt.")
+                return code
+            else:
+                logging.warning("Code compilation failed. Retrying...")
+                error_message = "Compilation failed for generated code."
+                return self.retry_code_generation(prompt, error_message)
+        else:
+            logging.error("Validation failed for the generated code.")
+            return self.retry_code_generation(prompt, "Validation failed for generated code.")
 
     ############################
     ### Game Rules Generation ##
@@ -290,7 +337,7 @@ class LLMService:
 
 # Example usage
 if __name__ == "__main__":
-    game_name = "Tic Tac Toe"
+    game_name = "Pytorch"
     llm_service = LLMService()
     print("*"*100)
     print("[INFO]: Testing LLM Generation for Code and Game Rules")
