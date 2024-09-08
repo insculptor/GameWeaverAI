@@ -6,9 +6,7 @@ GameWeaverAI is an intelligent game generation system that allows users to gener
 
 The architecture of the GameWeaverAI application is outlined in the diagram below:
 
-![GameWeaverAI Application Flow](images/GameweaverAI_Application_Flow.gif)
-
-This diagram represents the flow of how the system ingests game rule PDFs, processes the rules through the RAG pipeline, generates the game code, and renders it on the user interface.
+![GameWeaverAI Application Flow](https://github.com/insculptor/GameWeaverAI/blob/master/images/GameweaverAI%20_Application_Flow.gif?raw=true)
 
 
 ## Table of Contents
@@ -169,3 +167,4 @@ JARVIS_OLLAMA_CODE_ENDPOINT=https://your-jarvislabs-endpoint
 - **[Streamlit](https://streamlit.io/)**: For the web interface to interact with the RAG pipeline.
 - **[ChromaDB](https://www.trychroma.com/)**: For vector storage and retrieval.
 - **LangChain**: For text chunking and recursive character splitting.
+
