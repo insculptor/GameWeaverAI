@@ -2,20 +2,33 @@
 
 GameWeaverAI is an intelligent game generation system that allows users to generate and play simple games, such as Tic-Tac-Toe or more complex games based on rules ingested from documents. The application uses Retrieval-Augmented Generation (RAG) and a custom RAG pipeline to dynamically create games from game rule documents stored in a vector database. Users can upload PDF files containing game rules, and the system will generate and validate Python code for the game, which users can play in a terminal window.
 
+## Architecture
+
+The architecture of the GameWeaverAI application is outlined in the diagram below:
+
+![GameWeaverAI Application Flow](images/GameweaverAI_Application_Flow.gif)
+
+This diagram represents the flow of how the system ingests game rule PDFs, processes the rules through the RAG pipeline, generates the game code, and renders it on the user interface.
+
+
+## Table of Contents
+2. [Features](#features)
+2. [Project Structure](#project-structure)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Environment Variables](#environment-variables)
+6. [How it Works](#how-it-works)
+7. [Acknowledgements](#acknowledgements)
+
 ## Features
 - **Game Rule Ingestion**: Upload PDF documents that contain game rules, and the system will ingest the document into a vector database.
+- **Dynamic Game Ingestion**: Generates Game Rules based on Game Name Inpt from User and ingest in Vector Database for future Use.
 - **Dynamic Game Generation**: Generates Python code for the game based on the ingested rules and allows users to play the game directly in a terminal window.
+- **LLM Service Fallback**: A serverless Ollama service to cater to rules and code generation needs and OpenAI api serive as Fallback if Ollama is unavailable.
 - **Code Validation**: Automatically validates generated Python code for syntax and execution errors, retrying up to 3 times.
 - **RAG Pipeline**: Uses Retrieval-Augmented Generation to retrieve and generate game rules dynamically from ingested documents.
 - **Streamlit UI**: A user-friendly web interface built using Streamlit to interact with the system.
 
-## Table of Contents
-1. [Project Structure](#project-structure)
-2. [Installation](#installation)
-3. [Usage](#usage)
-4. [Environment Variables](#environment-variables)
-5. [How it Works](#how-it-works)
-6. [Acknowledgements](#acknowledgements)
 
 ## Project Structure
 ```
@@ -91,7 +104,7 @@ GameWeaverAI is an intelligent game generation system that allows users to gener
 
 ## Usage
 
-### 1. **Upload Game Rules (Admin Panel)**
+### 1. **Upload Game Rules (Admin Panel) [Optional]**
    - Navigate to the **Admin: Upload Document** page from the sidebar.
    - Upload a PDF containing game rules. Ensure the document follows the required structure:
      - Overview
@@ -107,7 +120,8 @@ GameWeaverAI is an intelligent game generation system that allows users to gener
    - Enter the Game ID to fetch and display metadata for a specific game.
 
 ### 3. **Generate Game**
-   - Enter the name of the game on the home page, and the system will generate the Python code for the game.
+   - Enter the name of the game on the home page, and the system will generate the Python code for the game, if its available.
+      - If the game in unavailable, the system will generate a game with same name.
    - A message will indicate that the game has been generated, and it will open in a new terminal window where you can play.
 
 ## Environment Variables
