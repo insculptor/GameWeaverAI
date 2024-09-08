@@ -38,7 +38,6 @@ GameWeaverAI is an intelligent game generation system that allows users to gener
 │   ├── docs
 │   │   ├── Bill Gates.pdf         # Example game rules document
 │   │   ├── Tic Tac Toe.pdf        # Example game rules document
-│   │   └── tic_tac_toe.pdf        # Example game rules document
 ├── notebooks
 │   ├── rag_pipeline.ipynb         # Jupyter notebook for RAG pipeline testing
 │   ├── testing_prompts.ipynb      # Jupyter notebook for testing prompts
@@ -58,7 +57,7 @@ GameWeaverAI is an intelligent game generation system that allows users to gener
 ## Installation
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.11 or higher
 - [Streamlit](https://streamlit.io/)
 - [PyTorch](https://pytorch.org/)
 - [LangChain](https://langchain.com/)
