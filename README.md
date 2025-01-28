@@ -2,6 +2,7 @@
 
 GameWeaverAI is an intelligent game generation system that allows users to generate and play simple games, such as Tic-Tac-Toe or more complex games based on rules ingested from documents. The application uses Retrieval-Augmented Generation (RAG) and a custom RAG pipeline to dynamically create games from game rule documents stored in a vector database. Users can upload PDF files containing game rules, and the system will generate and validate Python code for the game, which users can play in a terminal window.
 
+
 ## Architecture
 
 The architecture of the GameWeaverAI application is outlined in the diagram below:
